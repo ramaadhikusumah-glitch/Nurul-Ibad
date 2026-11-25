@@ -1,58 +1,119 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Pondok Pesantren Nurul Ibad
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Website profil dan penerimaan santri baru (PSB) **Pondok Pesantren Nurul Ibad**, Lubang Buaya, Cipayung, Jakarta Timur. Khusus santri putra, binaan terbatas ±25 santri.
 
-## About Laravel
+Web ini hanya **tampilan** (landing page). Tidak ada login, admin, maupun database. Pendaftaran dan pertanyaan calon wali santri dikirim lewat **WhatsApp**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Isi halaman
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Profil & sanad keilmuan, serta empat karakter santri
+- Lingkungan pondok (galeri foto dengan perbesar/lightbox)
+- Program Bimbingan Multimedia & Komputer
+- Dewan asatidz dan pimpinan yayasan
+- Tim humas dengan tombol chat WhatsApp per ustadz
+- Informasi infaq & pendaftaran, alur PSB 4 langkah
+- Formulir pendaftaran awal yang diteruskan ke WhatsApp panitia
+- Lokasi, peta, dan petunjuk arah
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Teknologi
 
-## Learning Laravel
+- Laravel (Blade) untuk routing dan template
+- Tailwind CSS (via CDN) untuk tampilan
+- JavaScript biasa untuk menu HP, animasi scroll, galeri, dan formulir WhatsApp
+- Google Fonts: Plus Jakarta Sans dan Amiri
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+> Tailwind masih memakai CDN, jadi halaman butuh koneksi internet saat dibuka. Untuk produksi, sebaiknya di-build lewat Vite (`npm run build`).
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Menjalankan di komputer
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Kebutuhan: PHP 8.2 atau lebih baru dan Composer.
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/ramaadhikusumah-glitch/Nurul-Ibad.git
+cd Nurul-Ibad
+composer install
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Salin file pengaturan:
 
-## Contributing
+```bash
+# Windows (PowerShell / CMD)
+copy .env.example .env
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# macOS / Linux
+cp .env.example .env
+```
 
-## Code of Conduct
+Buat kunci aplikasi dan jalankan:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+php artisan key:generate
+php artisan serve
+```
 
-## Security Vulnerabilities
+Buka `http://127.0.0.1:8000`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Pastikan di `.env` memakai penyimpanan berbasis file, karena web ini tidak memakai database:
 
-## License
+```env
+SESSION_DRIVER=file
+CACHE_STORE=file
+QUEUE_CONNECTION=sync
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Tidak perlu menjalankan `php artisan migrate`.
+
+## Mengubah isi web
+
+Semua teks, nomor WhatsApp, alamat, dan daftar foto ada di satu file:
+
+```
+config/pesantren.php
+```
+
+Bagian yang paling sering diubah:
+
+| Kunci | Isinya |
+|---|---|
+| `wa_panitia` | Nomor WhatsApp panitia PSB (format `62...`, tanpa `+` dan tanpa `0` di depan) |
+| `alamat`, `jam_kunjungan`, `maps_*` | Alamat, jam kunjungan, dan tautan Google Maps |
+| `hero`, `statistik` | Judul dan ringkasan di bagian atas |
+| `galeri` | Foto lingkungan beserta captionnya |
+| `profil`, `karakter` | Profil pondok dan empat karakter santri |
+| `it` | Program bimbingan multimedia & komputer |
+| `dewan` | Pimpinan yayasan dan asatidz |
+| `humas` | Tim humas (nama, nomor, pesan WhatsApp otomatis) |
+| `infaq`, `psb` | Informasi infaq, alur pendaftaran, pilihan tingkat |
+
+Tampilan halaman ada di `resources/views/home.blade.php`.
+
+Setelah mengubah config, jalankan `php artisan config:clear` bila perubahan belum terlihat.
+
+## Foto dan logo
+
+Simpan di `public/images/` dengan nama persis seperti di bawah (huruf kecil semua). Jika file belum ada, web otomatis menampilkan inisial atau kotak pengganti, jadi tidak ada gambar rusak.
+
+| Isi | Lokasi file |
+|---|---|
+| Logo | `public/images/logo.png` (PNG, latar transparan) |
+| Foto lingkungan (foto 1 jadi foto utama di bagian atas) | `public/images/lingkungan/1.jpg`, `2.jpg`, dst. |
+| Pendiri | `public/images/tokoh/pendiri.jpg` |
+| Ketua yayasan | `public/images/tokoh/ketua-yayasan.jpg` |
+| Ustadz dan humas | `public/images/ustadz/bisrilhafi.jpg`, `rifki.jpg`, `mazen.jpg`, `taufiq.jpg` |
+
+Saran: foto orang berbentuk kotak atau 3:4 dengan wajah di tengah, ukuran di bawah 300 KB (WebP atau JPG). Foto lingkungan berbentuk landscape, lebar sekitar 1600 px.
+
+Untuk menambah ustadz atau foto galeri, cukup tambah satu baris di `config/pesantren.php` pada bagian `dewan` atau `galeri`.
+
+## Pemasangan di hosting
+
+- PHP 8.2 atau lebih baru dengan ekstensi standar Laravel
+- Arahkan root domain ke folder `public/`
+- Di `.env` produksi: `APP_ENV=production`, `APP_DEBUG=false`, dan `APP_URL` sesuai domain
+- Jalankan `composer install --no-dev --optimize-autoloader`
+- Jangan unggah file `.env` dari komputer pengembang; buat `.env` baru di server lalu jalankan `php artisan key:generate`
+
+## Catatan
+
+- Foto dan data pimpinan, pengajar, serta santri hanya dipublikasikan atas izin pihak pondok.
+- Isi web mengikuti situs sebelumnya; yang diperbarui adalah tampilannya.
